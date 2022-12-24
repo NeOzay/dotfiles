@@ -136,6 +136,7 @@ alias ll="ls -a"
 alias HOME="cd $HOME"
 alias LOVE="cd /data/data/com.termux/files/home/storage/shared/Script/lua/love2d"
 alias serverlaptop="ssh benoit@90.103.88.3"
+alias nvconf="cd /home/ozay/.config/nvim/"
 export BASHRC="/data/data/com.termux/files/usr/etc/bash.bashrc"
 export SCRIPT="/data/data/com.termux/files/home/storage/shared/Script"
 
