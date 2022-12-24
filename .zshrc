@@ -156,4 +156,4 @@ export LESS_TERMCAP_us=$'\e[1;4;31m'
 
 command -v lsd > /dev/null && alias ls='lsd --group-dirs first'
 alias luamake=/luamake
-alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+alias dot_files='/usr/bin/git --git-dir=$HOME/.dot_files/ --work-tree=$HOME'
