@@ -123,8 +123,8 @@ promptinit
 
 
 
-PROMPT='%B%{$fg[blue]%}┌─(%{$fg[green]%}%0~%{$fg[blue]%})
-└>%{$fg[cyan]%}$ %{$reset_color%}%b'
+PROMPT='%{$fg[blue]%}┌─(%{$fg[green]%}%0~%{$fg[blue]%})
+└>%{$fg[cyan]%}$ %{$reset_color%}'
 
 alias lua=lua5.4                              
 alias ebashrc="nvim /data/data/com.termux/files/usr/etc/bash.bashrc"
