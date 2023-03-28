@@ -120,12 +120,13 @@ setopt correctall
 
 autoload -U promptinit
 promptinit
-
-
-
-PROMPT='%{$fg[blue]%}┌─(%{$fg[green]%}%0~%{$fg[blue]%})
+if [[ -f `realpath ~/.termux` ]];then
+  PROMPT='%B%{$fg[blue]%}┌─(%{$fg[green]%}%0~%{$fg[blue]%})
+└>%{$fg[cyan]%}$ %{$reset_color%}%b'
+else
+  PROMPT='%{$fg[blue]%}┌─(%{$fg[green]%}%0~%{$fg[blue]%})
 └>%{$fg[cyan]%}$ %{$reset_color%}'
-
+fi
 alias lua=lua5.4                              
 alias ebashrc="nvim /data/data/com.termux/files/usr/etc/bash.bashrc"
 
