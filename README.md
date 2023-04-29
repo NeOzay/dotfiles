@@ -7,7 +7,7 @@ Make sure to have git installed, then:
 
 - clone your github repository
   ```
-  git clone --bare https://github.com/USERNAME/dotfiles.git $HOME/.dotfiles
+  git clone --bare https://github.com/neozay/dotfiles.git $HOME/.dotfiles
   ```
 - define the alias in the current shell scope
   ```
