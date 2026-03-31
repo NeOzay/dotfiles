@@ -16,7 +16,7 @@ Gestion des dotfiles via un dépôt Git bare — les fichiers restent à leur em
 
 ```bash
 # 1. Cloner le dépôt en mode bare
-git clone --bare git@github.com:<utilisateur>/dotfiles.git $HOME/.dotfiles
+git clone git clone --branch dotfiles --single-branch --bare github.com:NeOzay/dotfiles.git $HOME/.dotfiles
 
 # 2. Définir l'alias de gestion
 alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
