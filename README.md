@@ -12,6 +12,40 @@ Gestion des dotfiles via un dépôt Git bare — les fichiers restent à leur em
 
 ---
 
+## Authentification SSH avec GitHub
+
+### 1. Générer la clé SSH
+```bash
+ssh-keygen -t ed25519 -C "ton@email.com" -f ~/.ssh/git
+```
+
+### 2. Ajouter la clé à `~/.ssh/config`
+```bash
+cat >> ~/.ssh/config << 'EOF'
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/git
+    AddKeysToAgent yes
+EOF
+```
+
+### 3. Copier la clé publique
+```bash
+cat ~/.ssh/git.pub
+```
+
+Ajouter la clé sur GitHub : **Settings → SSH and GPG keys → New SSH key** → coller.
+
+### 4. Tester la connexion
+```bash
+ssh -T git@github.com
+```
+
+Résultat attendu : `Hi <utilisateur>! You've successfully authenticated...`
+
+---
+
 ## Premier déploiement sur une nouvelle machine
 
 ```bash
