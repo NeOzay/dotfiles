@@ -188,6 +188,31 @@ command -v gh > /dev/null && eval "$(gh completion -s zsh)"
 
 command -v fcitx5-remote > /dev/null && fcitx5-remote -s keyboard-fr-nodeadkeys
 
+# Dépôt bare : les dotfiles sont trackés directement depuis $HOME.
+#
+# Piège connu (rencontré le 2026-08-15) : `git clone --bare` ne configure ni
+# remote.origin.fetch, ni refs/remotes/origin/*, ni branch.<nom>.merge — git
+# traite un dépôt bare comme un miroir, et `--branch X --single-branch` n'y
+# change rien. Sans suivi de branche, `dotfiles pull` suit le HEAD distant, qui
+# pointe sur la branche `readme` (documentaire, sans aucun dotfile) : le merge
+# supprime alors .zshrc et .bashrc du suivi ET du disque.
+#
+# Symptôme : "Need to specify how to reconcile divergent branches", puis un
+# merge qui veut supprimer les dotfiles. NE PAS résoudre en mergeant.
+#
+# Diagnostic — vérifier que le suivi existe avant tout pull :
+#   dotfiles status -sb            # doit afficher "## dotfiles...origin/dotfiles"
+#   dotfiles ls-remote origin      # HEAD distant pointe-t-il sur `dotfiles` ?
+#
+# Correctif (déjà appliqué ici, à rejouer sur une machine neuve) :
+#   dotfiles config --local remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+#   dotfiles config --local branch.dotfiles.remote origin
+#   dotfiles config --local branch.dotfiles.merge refs/heads/dotfiles
+#   dotfiles config --local pull.ff only
+#   dotfiles fetch origin && dotfiles remote set-head origin dotfiles
+#
+# `pull.ff only` fait désormais échouer proprement toute divergence au lieu de
+# fabriquer un merge. Procédure complète sur la branche `readme` du dépôt.
 alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 # opencode
