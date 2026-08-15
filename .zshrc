@@ -12,7 +12,7 @@ fi
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-# D�finir l'emplacement du fichier de cache Zcompdump
+# Définir l'emplacement du fichier de cache Zcompdump
 export ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-$HOST-$ZSH_VERSION"
 
 # Set name of the theme to load --- if set to "random", it will
@@ -45,26 +45,6 @@ ZSH_THEME="robbyrussell"
 # Uncomment the following line if pasting URLs and other text is messed up.
 # DISABLE_MAGIC_FUNCTIONS="true"
 
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# You can also set it to another string to have that shown instead of the default red dots.
-# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
-# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
 # Uncomment the following line if you want to change the command execution time
 # stamp shown in the history command output.
 # You can set one of the optional three formats:
@@ -95,7 +75,7 @@ plugins=(
 # fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
 # autoload -U compinit && compinit
 
-source $ZSH/oh-my-zsh.sh
+source "$ZSH/oh-my-zsh.sh"
 
 # User configuration
 
@@ -104,12 +84,12 @@ source $ZSH/oh-my-zsh.sh
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
+# use nvim if it exists, otherwise use vim
+if [ -x "$(command -v nvim)" ]; then
+  export EDITOR='nvim'
+else
+  export EDITOR='vim'
+fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -118,12 +98,11 @@ source $ZSH/oh-my-zsh.sh
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-if [ -d "$HOME/.local/bin/" ] ; then
-  PATH="$PATH:$HOME/.local/bin"
+
+# ~/.local/bin en tête du PATH (uv, claude, pipx...) pour pouvoir
+# surcharger un binaire système. Remplace le `. ~/.local/bin/env` de uv.
+if [ -d "$HOME/.local/bin" ] ; then
+  path=("$HOME/.local/bin" ${path:#$HOME/.local/bin})
 fi
 
 if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
@@ -149,29 +128,20 @@ bashcompinit
 
 autoload -U promptinit
 promptinit
-# if [[ -f `realpath ~/.termux` ]];then
-#   PROMPT='%B%{$fg[blue]%}┌─(%{$fg[green]%}%0~%{$fg[blue]%})
-# └>%{$fg[cyan]%}$ %{$reset_color%}%b'
-# else
-#   PROMPT='%{$fg[blue]%}┌─(%{$fg[green]%}%0~%{$fg[blue]%})
-# └>%{$fg[cyan]%}$ %{$reset_color%}'
-# fi
+
 # Example aliases
 alias zshconfig="nvim ~/.zshrc"
 alias sozsh="source ~/.zshrc"
 alias ohmyzsh="nvim ~/.oh-my-zsh"
-# alias ll="lsd -a"
 alias nvconf="cd ~/.config/nvim/ && nvim"
 
 
 alias cls=clear
-# alias ll="ls -a"                             
 
-# alias ls='ls --color=auto' 
 alias grep='grep --color=auto' 
 alias fgrep='fgrep --color=auto' 
 alias egrep='egrep --color=auto' 
-alias diff='diff - -color=auto'
+alias diff='diff --color=auto'
 #man color
 export LESS_TERMCAP_mb=$'\e[1;32m'
 export LESS_TERMCAP_md=$'\e[1;32m'
@@ -181,23 +151,18 @@ export LESS_TERMCAP_so=$'\e[01;33m'
 export LESS_TERMCAP_ue=$'\e[0m'
 export LESS_TERMCAP_us=$'\e[1;4;31m'
 
-command -v lsd > /dev/null && alias ls='lsd --group-dirs first'
-
-if [[ $1 == eval ]]
-then
-    "$@"
-set --
+if [ -x "$(command -v lsd)" ]; then
+  alias ls='lsd --group-dirs first'
+  alias ll="lsd --group-dirs first -l"
+  alias la="lsd --group-dirs first -a"
+  alias lla="lsd --group-dirs first -al"
+else
+   alias ll="ls -a"
+   alias ls='ls --color=auto' 
 fi
-
-export PATH="$HOME/.local/bin:$PATH"
+ 
 
 export YARN_ENABLE_GLOBAL_CACHE=true
-
-vv() {
-  select config in nvimold nvim
-  do NVIM_APPNAME=$config nvim $1; break; done
-}
-
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -224,3 +189,19 @@ command -v gh > /dev/null && eval "$(gh completion -s zsh)"
 command -v fcitx5-remote > /dev/null && fcitx5-remote -s keyboard-fr-nodeadkeys
 
 alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+
+
+[ -f "$HOME/.atuin/bin/env" ] && . "$HOME/.atuin/bin/env"
+
+command -v atuin > /dev/null && eval "$(atuin init zsh)"
+
+# Permet d'exécuter une commande dans un zsh interactif complet, alias et
+# fonctions inclus : `zsh -is eval "ma commande"`.
+# Les arguments passés au shell arrivent dans $@ ; on les exécute ici, tout
+# en fin de rc, pour que l'environnement soit entièrement chargé (brew, nvm,
+# pnpm, atuin...). `set --` vide ensuite les paramètres positionnels.
+if [[ $1 == eval ]]
+then
+    "$@"
+    set --
+fi
